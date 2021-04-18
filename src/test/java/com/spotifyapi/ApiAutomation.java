@@ -43,4 +43,21 @@ public class ApiAutomation {
     	response.then().assertThat().statusCode(200);
     			response.prettyPrint();
     }
+    
+    @Test
+    public void post_playlist () {
+    	Response response = given()
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/json")
+                .header("Authorization", tokenValue)
+                .body("{\\\"name\\\": \\\"Party_Mix_New\\\",\\\"description\\\": \\\"New playlist description\\\",\\\"public\\\": true}")
+                .when()
+                .post("https://api.spotify.com/v1/users/"+ id +"playlists");
+    	String name = response.path("owner.display_name");
+        System.out.println("Name Of Owner: " + name);
+        response.then().assertThat().statusCode(201);
+        response.prettyPrint();
+    }
+    
+    
 }
