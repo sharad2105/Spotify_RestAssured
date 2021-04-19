@@ -1,34 +1,39 @@
 package com.spotifyapi;
 
 import io.restassured.response.Response;
-
-import org.junit.Before;
-import org.junit.Test;
+import io.restassured.response.ResponseBody;
 
 import static io.restassured.RestAssured.given;
 
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 public class ApiAutomation {
    private static String tokenValue ="";
-   public String id="";
+   private static String id="";
+   public String name = "";
   
 
-    @Before
+    @BeforeMethod
     public void setUp() {
-        tokenValue = "Bearer BQA5q07_C5z6_T8geFQojrEcu_qZTucw_vJl7db5v5qZ2ncaR0GJOBmXT1T6u1oVnESBEWqUtPDqqWc-tRoA2J18tcS7q__UUOT4G5b02SyB2dvx3ngANXe8qvR-YHvqVAdB5Ab7hWSlg8rwebCDM4SMHHoJbre5HPim1Qp_MYxpMlB1hdfPrqCTCHb-wOUxf5tjG94fpIH_yDQ2Bd3GfysvbXAcvUzeYDgeqm3yP4RUYDKdfwKVEb1eiki3Ay4J9FnJwj_Y4d4k54IQ5jGi9b1pgFWMqo8AMnHNb4bx";
+        tokenValue = "Bearer BQD7S_6EjIq1tMy_U3BJbnWa7oEC9QetpBmcE4R60ApL8omZ7-OZxoSALgIN176iVHYx-_UAbId63Mk4IOvaSO9Vd8R0lqyFHzFjAUcf9n4BbKmIypTp0jwXRVlTLK8nwXg1CKNM0fe4v7H3VUX5CqR752JsQfquVCRh7PA-gpHxdTQ7KdFJOjMFsssN3k3nKXrMC7P_HOzFVagey6k1piwL7FLAuPwy1RN-VJPh5REcX-1KMb68tUgsbJ0DT1qzVnzG6hjzeOOEqxhuXv3SmSQ5FC_xSRb20LbE58XN";
     }
 
-    @Test
+   @Test
     public void spotify_RestAssured_Automation() {
-    
-        Response response = given()
-                .header("Accept", "application/json")
+  
+       Response response = given()
+               .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
-                .header("Authorization", tokenValue)
+               .header("Authorization", tokenValue)
                 .when()
-                .get("https://api.spotify.com/v1/me");
+               .get("https://api.spotify.com/v1/me");
         response.then().assertThat().statusCode(200);
-        id = response.path("id");
+       id = response.path("id");
         System.out.println("User ID "+id);
+        
+        ResponseBody body = response.getBody();
+        System.out.println("Rsponse body is"+body.asString());
         response.prettyPrint();       
     }
     
@@ -39,25 +44,22 @@ public class ApiAutomation {
                 .header("Content-Type", "application/json")
                 .header("Authorization", tokenValue)
                 .when()
-    			.get("https://api.spotify.com/v1/users/"+ id+"/");
+    			.get("https://api.spotify.com/v1/users/ulwt9ws4u0srlb1cm9bfe811o/");
     	response.then().assertThat().statusCode(200);
     			response.prettyPrint();
     }
-    
+   
     @Test
     public void post_playlist () {
     	Response response = given()
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
                 .header("Authorization", tokenValue)
-                .body("{\\\"name\\\": \\\"Party_Mix_New\\\",\\\"description\\\": \\\"New playlist description\\\",\\\"public\\\": true}")
+                .body("{\"name\": \"Sanu Kumar\",\"description\": \"old love song\",\"public\": true}")
                 .when()
-                .post("https://api.spotify.com/v1/users/"+ id +"playlists");
-    	String name = response.path("owner.display_name");
-        System.out.println("Name Of Owner: " + name);
+                .post("https://api.spotify.com/v1/users/ulwt9ws4u0srlb1cm9bfe811o/playlists");
+ 
         response.then().assertThat().statusCode(201);
         response.prettyPrint();
     }
-    
-    
 }
